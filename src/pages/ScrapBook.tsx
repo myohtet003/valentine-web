@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Lottie from "lottie-react";
 import { X } from "lucide-react";
@@ -82,7 +82,9 @@ export default function DigitalScrapbook() {
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
 
-  const handleDragEnd = (_: any, info: any) => {
+  import type { PanInfo } from "framer-motion";
+
+  const handleDragEnd = (_: MouseEvent | TouchEvent, info: PanInfo) => {
     const threshold = 50;
     if (info.offset.x < -threshold && currentPage < scrapbookData.length - 1) {
       setCurrentPage(currentPage + 1);

@@ -3,5 +3,13 @@
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
-  ]
+  ],
+
+  "compilerOptions": {
+    // ... အခြား code များ
+    "noUnusedLocals": false, // true ဖြစ်နေရင် false ပြောင်းပေးပါ
+    "noUnusedParameters": false
+  }
+  
 }
+
