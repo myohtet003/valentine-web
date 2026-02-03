@@ -141,8 +141,11 @@ export default function SweetDashboard() {
   const handleUnlock = () => {
     const correctPass = inputDate.replace(/-/g, "");
     if (passwordInput === correctPass) {
-      setIsAuthenticated(true);
       localStorage.setItem("is_auth", "true");
+      setIsAuthenticated(true);
+
+      // Page ကို reload လုပ်မှ Layout က Tab Bar ကို တန်းပြမှာပါ
+      window.location.reload();
     } else {
       setPasswordHint(`Starts with "${correctPass[0]}"`);
       alert("Incorrect Date!");

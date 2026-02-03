@@ -1,221 +1,416 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Lottie from "lottie-react";
-import { X } from "lucide-react";
-import type { PanInfo } from "framer-motion";
+import { X, Stars } from "lucide-react";
 
-// Assets
+// --- Assets Imports ---
 import heartAnimation from "../assets/lottie/like.json";
 import img1 from "../assets/images/phayar/1.jpg";
+import img2 from "../assets/images/phayar/2.jpg";
+import img3 from "../assets/images/phayar/3.jpg";
+import img4 from "../assets/images/phayar/4.jpg";
+import img5 from "../assets/images/phayar/5.jpg";
+import bir1 from "../assets/images/birthday/1.jpg";
+import bir2 from "../assets/images/birthday/2.jpg";
+import bir3 from "../assets/images/birthday/3.jpg";
+import bir4 from "../assets/images/birthday/4.jpg";
+import bir5 from "../assets/images/birthday/6.jpg";
+import tha1 from "../assets/images/thanakhar/1.jpg";
+import tha2 from "../assets/images/thanakhar/2.jpg";
+// import tha3 from "../assets/images/thanakhar/3.jpg";
+import tha4 from "../assets/images/thanakhar/4.jpg";
+import tha5 from "../assets/images/thanakhar/5.jpg";
+import tha6 from "../assets/images/thanakhar/6.jpg";
+import tha7 from "../assets/images/thanakhar/7.jpg";
+import cof1 from "../assets/images/coffee/1.jpg";
+import cof2 from "../assets/images/coffee/2.jpg";
+import cof3 from "../assets/images/coffee/3.jpg";
+import cof4 from "../assets/images/coffee/4.jpg";
+import cof5 from "../assets/images/coffee/5.jpg";
+import tog1 from "../assets/images/sport/1.jpg";
+import tog2 from "../assets/images/sport/2.jpg";
+import tog3 from "../assets/images/sport/3.jpg";
+import tog4 from "../assets/images/sport/4.jpg";
+import tog5 from "../assets/images/sport/5.jpg";
+// import tog6 from "../assets/images/sport/6.jpg";
 
 const scrapbookData = [
   {
     id: "page1",
-    title: "pagoda visits✨ >>",
-    date: "memories",
+    title: "Pagoda Visits✨",
+    date: "Memories",
     items: [
       {
         type: "photo",
         source: img1,
-        top: "15%",
-        left: "10%",
-        rotate: -8,
-        width: 160,
-        height: 200,
+        top: "8%",
+        left: "5%",
+        rotate: -6,
+        width: 150,
+        height: 180,
       },
       {
         type: "sticker",
-        source: "https://picsum.photos/100/100?2",
-        top: "10%",
+        source: img2,
+        top: "5%",
         left: "60%",
-        rotate: 15,
-        width: 80,
-        height: 80,
+        rotate: 12,
+        width: 90,
+        height: 90,
       },
       {
         type: "photo",
-        source: "https://picsum.photos/200/300?3",
-        top: "50%",
+        source: img3,
+        top: "25%",
         left: "45%",
-        rotate: 5,
+        rotate: 8,
         width: 140,
-        height: 180,
+        height: 170,
+      },
+      {
+        type: "photo",
+        source: img4,
+        top: "52%",
+        left: "3%",
+        rotate: -4,
+        width: 140,
+        height: 160,
+      },
+      {
+        type: "photo",
+        source: img5,
+        top: "55%",
+        left: "52%",
+        rotate: -10,
+        width: 130,
+        height: 150,
       },
     ],
   },
   {
     id: "page2",
-    title: "sweet moments✨ >>",
-    date: "forever",
+    title: "Birthday Fun 🎉",
+    date: "Forever",
     items: [
       {
         type: "photo",
-        source: img1,
-        top: "15%",
-        left: "10%",
+        source: bir1,
+        top: "2%",
+        left: "12%",
+        rotate: -3,
+        width: 220,
+        height: 200,
+      },
+      {
+        type: "photo",
+        source: bir3,
+        top: "38%",
+        left: "5%",
         rotate: -8,
+        width: 150,
+        height: 170,
+      },
+      {
+        type: "sticker",
+        source: bir2,
+        top: "35%",
+        left: "65%",
+        rotate: 15,
+        width: 110,
+        height: 90,
+      },
+      {
+        type: "photo",
+        source: bir4,
+        top: "52%",
+        left: "48%",
+        rotate: 6,
         width: 160,
+        height: 190,
+      },
+      {
+        type: "sticker",
+        source: bir5,
+        top: "75%",
+        left: "15%",
+        rotate: -12,
+        width: 120,
+        height: 70,
+      },
+    ],
+  },
+  {
+    id: "page3",
+    title: "Thanakhar Challenge😂",
+    date: "Funny Days",
+    items: [
+      {
+        type: "photo",
+        source: tha1,
+        top: "5%",
+        left: "22%",
+        rotate: 4,
+        width: 190,
+        height: 150,
+      },
+      {
+        type: "photo",
+        source: tha4,
+        top: "28%",
+        left: "5%",
+        rotate: -6,
+        width: 140,
+        height: 180,
+      },
+      {
+        type: "photo",
+        source: tha5,
+        top: "30%",
+        left: "55%",
+        rotate: 10,
+        width: 140,
+        height: 180,
+      },
+      {
+        type: "sticker",
+        source: tha2,
+        top: "52%",
+        left: "35%",
+        rotate: 0,
+        width: 110,
+        height: 70,
+      },
+      {
+        type: "photo",
+        source: tha6,
+        top: "60%",
+        left: "10%",
+        rotate: -12,
+        width: 130,
+        height: 160,
+      },
+      {
+        type: "photo",
+        source: tha7,
+        top: "65%",
+        left: "52%",
+        rotate: 5,
+        width: 140,
+        height: 170,
+      },
+    ],
+  },
+  {
+    id: "page4",
+    title: "Sweet Memories😍",
+    date: "Scrapbook",
+    items: [
+      {
+        type: "photo",
+        source: cof1,
+        top: "22%",
+        left: "15%",
+        rotate: 0,
+        width: 250,
         height: 200,
       },
       {
         type: "sticker",
-        source: "https://picsum.photos/100/100?2",
-        top: "10%",
-        left: "60%",
-        rotate: 15,
-        width: 80,
-        height: 80,
+        source: cof2,
+        top: "12%",
+        left: "8%",
+        rotate: -20,
+        width: 70,
+        height: 70,
       },
       {
         type: "photo",
-        source: "https://picsum.photos/200/300?3",
-        top: "50%",
-        left: "45%",
-        rotate: 5,
+        source: cof5,
+        top: "4%",
+        left: "55%",
+        rotate: -12,
+        width: 130,
+        height: 140,
+      },
+      {
+        type: "sticker",
+        source: cof4,
+        top: "65%",
+        left: "65%",
+        rotate: 15,
+        width: 90,
+        height: 90,
+      },
+      {
+        type: "photo",
+        source: cof3,
+        top: "72%",
+        left: "8%",
+        rotate: 10,
+        width: 120,
+        height: 130,
+      },
+    ],
+  },
+  {
+    id: "page5",
+    title: "Together Moments 💖",
+    date: "Forever With You",
+    items: [
+      {
+        type: "photo",
+        source: tog1,
+        top: "5%",
+        left: "5%",
+        rotate: -5,
         width: 140,
-        height: 180,
+        height: 170,
+      },
+      {
+        type: "photo",
+        source: tog3,
+        top: "8%",
+        left: "52%",
+        rotate: 8,
+        width: 130,
+        height: 150,
+      },
+      {
+        type: "photo",
+        source: tog5,
+        top: "32%",
+        left: "22%",
+        rotate: -2,
+        width: 170,
+        height: 210,
+      },
+      {
+        type: "photo",
+        source: tog4,
+        top: "65%",
+        left: "55%",
+        rotate: 10,
+        width: 130,
+        height: 150,
+      },
+      {
+        type: "sticker",
+        source: tog2,
+        top: "62%",
+        left: "8%",
+        rotate: -15,
+        width: 100,
+        height: 100,
       },
     ],
   },
 ];
 
 export default function DigitalScrapbook() {
-  const [currentPage, setCurrentPage] = useState(0);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
-  const [isAnimating, setIsAnimating] = useState(false); // Animation ဖြစ်နေစဉ် drag ပိတ်ရန်
-
-  const handleDragEnd = (_: MouseEvent | TouchEvent, info: PanInfo) => {
-    if (isAnimating) return; // Animation မပြီးသေးရင် ဘာမှမလုပ်ပါ
-
-    const threshold = 100; // Threshold ကို နည်းနည်းတိုးလိုက်ပါ (မတော်တဆ ထိမိတာ ကာကွယ်ရန်)
-    const velocity = info.velocity.x;
-
-    if (info.offset.x < -threshold || velocity < -500) {
-      if (currentPage < scrapbookData.length - 1) {
-        setIsAnimating(true);
-        setCurrentPage((prev) => prev + 1);
-      }
-    } else if (info.offset.x > threshold || velocity > 500) {
-      if (currentPage > 0) {
-        setIsAnimating(true);
-        setCurrentPage((prev) => prev - 1);
-      }
-    }
-  };
 
   return (
-    <div className="fixed inset-0 bg-[#FFB3C1] flex flex-col items-center justify-start overflow-hidden touch-none pb-[80px]">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#FFF0F3] via-[#FFCCD5] to-[#FFB3C1]" />
+    <div className="min-h-screen bg-gradient-to-b from-[#FFF0F3] to-[#FFB3C1] overflow-hidden flex flex-col font-sans select-none">
+      {/* Header */}
+      <div className="text-center mt-10 mb-2 relative z-10 px-4">
+        <h1 className="text-2xl font-extrabold text-[#C9184A] flex items-center justify-center gap-2">
+          <Stars size={20} /> Our Scrapbook <Stars size={20} />
+        </h1>
+      </div>
 
-      <div className="relative w-full h-[calc(100vh-120px)] max-w-[430px] z-10 perspective-[2000px] mt-4 flex items-center justify-center">
-        {/* popLayout mode သည် page အဟောင်းထွက်သွားမှ အသစ်ဝင်လာစေပြီး unresponsive ဖြစ်တာကို ကာကွယ်ပေးသည် */}
-        <AnimatePresence mode="popLayout" initial={false}>
-          <motion.div
-            key={currentPage}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.2}
-            onDragEnd={handleDragEnd}
-            onAnimationComplete={() => setIsAnimating(false)} // Animation ပြီးမှ နောက်တစ်ခါ ဆွဲခွင့်ပေးမည်
-            initial={{ x: 300, opacity: 0, rotateY: 45 }}
-            animate={{ x: 0, opacity: 1, rotateY: 0 }}
-            exit={{ x: -300, opacity: 0, rotateY: -45 }}
-            transition={{
-              type: "spring",
-              stiffness: 260,
-              damping: 20,
-            }}
-            className="absolute w-[90%] h-[90%] rounded-[40px] border border-white/40 overflow-hidden bg-gradient-to-br from-[#FFD6E0] to-[#FFF0F3] shadow-2xl flex flex-col preserve-3d touch-none"
-          >
-            {/* Header */}
-            <div className="pt-10 pb-4 flex flex-col items-center z-20 pointer-events-none select-none">
-              <div className="bg-white/50 backdrop-blur-md px-6 py-2 rounded-full border border-white/60">
-                <span className="text-[#C9184A] font-extrabold text-sm tracking-tight">
-                  {scrapbookData[currentPage].title}
+      {/* Main Horizontal Scrollable Area */}
+      <div className="flex-1 flex items-center overflow-x-auto no-scrollbar snap-x snap-mandatory py-10">
+        <div className="flex px-6 gap-6">
+          {scrapbookData.map((page) => (
+            <div
+              key={page.id}
+              className="relative flex-shrink-0 w-[85vw] max-w-[380px] h-[70vh] bg-[#FFF9FA] rounded-[40px] shadow-2xl border border-white/50 overflow-hidden snap-center flex flex-col"
+            >
+              {/* Page Header */}
+              <div className="pt-8 pb-4 flex flex-col items-center z-20">
+                <div className="bg-white/70 backdrop-blur-md px-5 py-1.5 rounded-full border border-pink-100 shadow-sm">
+                  <span className="text-[#C9184A] font-bold text-xs uppercase tracking-widest">
+                    {page.title}
+                  </span>
+                </div>
+                <span className="text-[9px] text-pink-400 font-bold mt-2 tracking-[3px] uppercase opacity-60">
+                  {page.date}
                 </span>
               </div>
-              <span className="text-[10px] text-[#A4133C] font-bold mt-2 uppercase tracking-[3px] opacity-60">
-                {scrapbookData[currentPage].date}
-              </span>
-            </div>
 
-            {/* Scrapbook Elements */}
-            <div className="relative flex-1 w-full overflow-hidden">
-              {scrapbookData[currentPage].items.map((item, idx) => (
-                <motion.div
-                  key={`${currentPage}-${idx}`} // Key ကို page id ပါထည့်ပေးမှ element တွေ မရောမှာဖြစ်သည်
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.2 + idx * 0.1 }}
-                  style={{
-                    position: "absolute",
-                    top: item.top,
-                    left: item.left,
-                    rotate: `${item.rotate}deg`,
-                    zIndex: item.type === "sticker" ? 10 : 5,
-                  }}
-                  onTap={() => {
-                    // Click အစား Framer Motion ရဲ့ onTap ကိုသုံးခြင်းက Drag နဲ့ မငြိစေပါ
-                    if (item.type === "photo")
-                      setSelectedPhoto(item.source as string);
-                  }}
-                >
-                  <div
-                    className={`${item.type === "photo" ? "p-2 bg-white shadow-lg cursor-pointer" : ""}`}
+              {/* Items Area */}
+              <div className="relative flex-1 w-full">
+                {page.items.map((item, idx) => (
+                  <motion.div
+                    key={`${page.id}-${idx}`}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.1 * idx }}
+                    style={{
+                      position: "absolute",
+                      top: item.top,
+                      left: item.left,
+                      rotate: `${item.rotate}deg`,
+                      zIndex: item.type === "sticker" ? 20 : 10,
+                    }}
+                    onClick={() =>
+                      item.type === "photo" &&
+                      setSelectedPhoto(item.source as string)
+                    }
                   >
-                    <img
-                      src={item.source as string}
-                      alt="memory"
-                      style={{ width: item.width, height: item.height }}
-                      className="object-cover pointer-events-none" // Image ကို drag ဆွဲမိတာ ကာကွယ်ရန်
-                    />
-                    {item.type === "photo" && (
-                      <div className="text-center text-[10px] mt-1 text-pink-400 font-bold">
-                        ♡
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+                    <div
+                      className={
+                        item.type === "photo"
+                          ? "p-1.5 bg-white shadow-lg border-[0.5px] border-gray-100 active:scale-95 transition-transform"
+                          : ""
+                      }
+                    >
+                      <img
+                        src={item.source as string}
+                        style={{ width: item.width, height: item.height }}
+                        className="object-cover rounded-sm block pointer-events-none"
+                        alt=""
+                      />
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
 
-            {/* Lottie Animation */}
-            <div className="absolute bottom-4 right-4 w-24 h-24 z-30 pointer-events-none">
-              <Lottie animationData={heartAnimation} loop={true} />
+              {/* Floating Animation for each page */}
+              <div className="absolute bottom-4 right-4 w-12 h-12 z-30 opacity-80">
+                <Lottie animationData={heartAnimation} loop={true} />
+              </div>
             </div>
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Indicators */}
-        <div className="absolute bottom-[-20px] left-0 right-0 flex justify-center gap-2 z-20">
-          {scrapbookData.map((_, i) => (
-            <motion.div
-              key={i}
-              animate={{ width: i === currentPage ? 16 : 4 }}
-              className={`h-1 rounded-full ${i === currentPage ? "bg-[#C9184A]" : "bg-white/40"}`}
-            />
           ))}
         </div>
       </div>
 
-      {/* Full Image Modal */}
+      {/* Instructions */}
+      <div className="pb-10 text-center">
+        <p className="text-[10px] font-bold text-[#A4133C] opacity-40 uppercase tracking-[3px]">
+          Swipe to turn pages • Tap photos to zoom
+        </p>
+      </div>
+
+      {/* Full Screen View (Zoom) */}
       <AnimatePresence>
         {selectedPhoto && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/95 z-[999] flex flex-col items-center justify-center p-6"
+            className="fixed inset-0 bg-black/90 z-[100] flex flex-col items-center justify-center p-6"
             onClick={() => setSelectedPhoto(null)}
           >
             <motion.img
-              initial={{ scale: 0.8 }}
+              initial={{ scale: 0.7 }}
               animate={{ scale: 1 }}
               src={selectedPhoto}
-              className="max-w-full max-h-[70vh] rounded-xl shadow-2xl"
+              className="max-w-full max-h-[75vh] rounded-xl shadow-2xl border-2 border-white/20"
             />
-            <button className="mt-8 text-white/70 text-xs font-bold tracking-widest uppercase flex items-center gap-2 border border-white/20 px-4 py-2 rounded-full">
-              <X size={14} /> Tap to Close
+            <button className="mt-8 text-white/70 flex items-center gap-2 border border-white/20 px-6 py-2 rounded-full hover:bg-white/10">
+              <X size={18} /> Close Memory
             </button>
           </motion.div>
         )}
