@@ -1,9 +1,8 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Lottie from "lottie-react";
 import { X } from "lucide-react";
-
- import type { PanInfo } from "framer-motion";
+import type { PanInfo } from "framer-motion";
 
 // Assets
 import heartAnimation from "../assets/lottie/like.json";
@@ -46,8 +45,8 @@ const scrapbookData = [
   },
   {
     id: "page2",
-    title: "pagoda visits✨ >>",
-    date: "memories",
+    title: "sweet moments✨ >>",
+    date: "forever",
     items: [
       {
         type: "photo",
@@ -83,45 +82,53 @@ const scrapbookData = [
 export default function DigitalScrapbook() {
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
-
- 
+  const [isAnimating, setIsAnimating] = useState(false); // Animation ဖြစ်နေစဉ် drag ပိတ်ရန်
 
   const handleDragEnd = (_: MouseEvent | TouchEvent, info: PanInfo) => {
-    const threshold = 50;
-    if (info.offset.x < -threshold && currentPage < scrapbookData.length - 1) {
-      setCurrentPage(currentPage + 1);
-    } else if (info.offset.x > threshold && currentPage > 0) {
-      setCurrentPage(currentPage - 1);
+    if (isAnimating) return; // Animation မပြီးသေးရင် ဘာမှမလုပ်ပါ
+
+    const threshold = 100; // Threshold ကို နည်းနည်းတိုးလိုက်ပါ (မတော်တဆ ထိမိတာ ကာကွယ်ရန်)
+    const velocity = info.velocity.x;
+
+    if (info.offset.x < -threshold || velocity < -500) {
+      if (currentPage < scrapbookData.length - 1) {
+        setIsAnimating(true);
+        setCurrentPage((prev) => prev + 1);
+      }
+    } else if (info.offset.x > threshold || velocity > 500) {
+      if (currentPage > 0) {
+        setIsAnimating(true);
+        setCurrentPage((prev) => prev - 1);
+      }
     }
   };
 
   return (
-    // 1. Root Container: Padding Bottom ထည့်ထားခြင်းဖြင့် Tab bar နဲ့ မငြိတော့ပါ
     <div className="fixed inset-0 bg-[#FFB3C1] flex flex-col items-center justify-start overflow-hidden touch-none pb-[80px]">
       <div className="absolute inset-0 bg-gradient-to-b from-[#FFF0F3] via-[#FFCCD5] to-[#FFB3C1]" />
 
-      {/* 2. Phone Wrapper: Height ကို 100% မယူဘဲ Tab bar အတွက် နေရာချန်ထားပါတယ် */}
-      <div className="relative w-full h-[calc(100vh-100px)] max-w-[430px] z-10 perspective-[2000px] mt-4">
-        <AnimatePresence mode="wait">
+      <div className="relative w-full h-[calc(100vh-120px)] max-w-[430px] z-10 perspective-[2000px] mt-4 flex items-center justify-center">
+        {/* popLayout mode သည် page အဟောင်းထွက်သွားမှ အသစ်ဝင်လာစေပြီး unresponsive ဖြစ်တာကို ကာကွယ်ပေးသည် */}
+        <AnimatePresence mode="popLayout" initial={false}>
           <motion.div
             key={currentPage}
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.2}
             onDragEnd={handleDragEnd}
-            initial={{ rotateY: 90, opacity: 0 }}
-            animate={{ rotateY: 0, opacity: 1 }}
-            exit={{ rotateY: -90, opacity: 0 }}
+            onAnimationComplete={() => setIsAnimating(false)} // Animation ပြီးမှ နောက်တစ်ခါ ဆွဲခွင့်ပေးမည်
+            initial={{ x: 300, opacity: 0, rotateY: 45 }}
+            animate={{ x: 0, opacity: 1, rotateY: 0 }}
+            exit={{ x: -300, opacity: 0, rotateY: -45 }}
             transition={{
-              duration: 0.6,
               type: "spring",
-              stiffness: 200,
-              damping: 25,
+              stiffness: 260,
+              damping: 20,
             }}
-            // Card ကို အောက်ခြေထိ မဆင်းစေရန် margin-bottom ပေးထားသည်
-            className="absolute inset-x-4 inset-y-2 rounded-[40px] border border-white/40 overflow-hidden bg-gradient-to-br from-[#FFD6E0] to-[#FFF0F3] shadow-2xl flex flex-col preserve-3d"
+            className="absolute w-[90%] h-[90%] rounded-[40px] border border-white/40 overflow-hidden bg-gradient-to-br from-[#FFD6E0] to-[#FFF0F3] shadow-2xl flex flex-col preserve-3d touch-none"
           >
             {/* Header */}
-            <div className="pt-10 pb-4 flex flex-col items-center z-20 pointer-events-none">
+            <div className="pt-10 pb-4 flex flex-col items-center z-20 pointer-events-none select-none">
               <div className="bg-white/50 backdrop-blur-md px-6 py-2 rounded-full border border-white/60">
                 <span className="text-[#C9184A] font-extrabold text-sm tracking-tight">
                   {scrapbookData[currentPage].title}
@@ -136,10 +143,10 @@ export default function DigitalScrapbook() {
             <div className="relative flex-1 w-full overflow-hidden">
               {scrapbookData[currentPage].items.map((item, idx) => (
                 <motion.div
-                  key={idx}
+                  key={`${currentPage}-${idx}`} // Key ကို page id ပါထည့်ပေးမှ element တွေ မရောမှာဖြစ်သည်
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.3 + idx * 0.1 }}
+                  transition={{ delay: 0.2 + idx * 0.1 }}
                   style={{
                     position: "absolute",
                     top: item.top,
@@ -147,23 +154,23 @@ export default function DigitalScrapbook() {
                     rotate: `${item.rotate}deg`,
                     zIndex: item.type === "sticker" ? 10 : 5,
                   }}
-                  onClick={(e) => {
-                    e.stopPropagation();
+                  onTap={() => {
+                    // Click အစား Framer Motion ရဲ့ onTap ကိုသုံးခြင်းက Drag နဲ့ မငြိစေပါ
                     if (item.type === "photo")
                       setSelectedPhoto(item.source as string);
                   }}
                 >
                   <div
-                    className={`${item.type === "photo" ? "p-2 bg-white shadow-lg" : ""}`}
+                    className={`${item.type === "photo" ? "p-2 bg-white shadow-lg cursor-pointer" : ""}`}
                   >
                     <img
                       src={item.source as string}
                       alt="memory"
                       style={{ width: item.width, height: item.height }}
-                      className="object-cover"
+                      className="object-cover pointer-events-none" // Image ကို drag ဆွဲမိတာ ကာကွယ်ရန်
                     />
                     {item.type === "photo" && (
-                      <div className="text-center text-[10px] mt-1 text-pink-400">
+                      <div className="text-center text-[10px] mt-1 text-pink-400 font-bold">
                         ♡
                       </div>
                     )}
@@ -172,23 +179,20 @@ export default function DigitalScrapbook() {
               ))}
             </div>
 
-            {/* 3. Lottie Animation: Z-index ကို အမြင့်ဆုံးထားပြီး pointer-events-none လုပ်ထားသည် */}
-            <div className="absolute bottom-2 right-2 w-32 h-32 z-30 pointer-events-none">
-              <Lottie
-                animationData={heartAnimation}
-                loop={true}
-                style={{ width: "100%", height: "100%" }}
-              />
+            {/* Lottie Animation */}
+            <div className="absolute bottom-4 right-4 w-24 h-24 z-30 pointer-events-none">
+              <Lottie animationData={heartAnimation} loop={true} />
             </div>
           </motion.div>
         </AnimatePresence>
 
         {/* Indicators */}
-        <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2 z-20">
+        <div className="absolute bottom-[-20px] left-0 right-0 flex justify-center gap-2 z-20">
           {scrapbookData.map((_, i) => (
-            <div
+            <motion.div
               key={i}
-              className={`h-1 w-1 rounded-full ${i === currentPage ? "bg-[#C9184A] w-4" : "bg-white/40"}`}
+              animate={{ width: i === currentPage ? 16 : 4 }}
+              className={`h-1 rounded-full ${i === currentPage ? "bg-[#C9184A]" : "bg-white/40"}`}
             />
           ))}
         </div>
@@ -208,10 +212,10 @@ export default function DigitalScrapbook() {
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               src={selectedPhoto}
-              className="max-w-full max-h-[70vh] rounded-xl"
+              className="max-w-full max-h-[70vh] rounded-xl shadow-2xl"
             />
-            <button className="mt-6 text-white/50 text-xs font-bold tracking-widest uppercase flex items-center gap-2">
-              <X size={16} /> Tap to Close
+            <button className="mt-8 text-white/70 text-xs font-bold tracking-widest uppercase flex items-center gap-2 border border-white/20 px-4 py-2 rounded-full">
+              <X size={14} /> Tap to Close
             </button>
           </motion.div>
         )}

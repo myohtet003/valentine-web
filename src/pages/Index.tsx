@@ -52,7 +52,11 @@ export default function SweetDashboard() {
   const [isSaved, setIsSaved] = useState(
     () => localStorage.getItem("anni_date") !== null,
   );
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  //   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // ဒီ line ကို ရှာပြီး အောက်ကအတိုင်း အစားထိုးပါ
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    () => localStorage.getItem("is_auth") === "true",
+  );
   const [passwordInput, setPasswordInput] = useState("");
   const [passwordHint, setPasswordHint] = useState("");
 
@@ -138,6 +142,7 @@ export default function SweetDashboard() {
     const correctPass = inputDate.replace(/-/g, "");
     if (passwordInput === correctPass) {
       setIsAuthenticated(true);
+      localStorage.setItem("is_auth", "true");
     } else {
       setPasswordHint(`Starts with "${correctPass[0]}"`);
       alert("Incorrect Date!");
