@@ -31,7 +31,20 @@ const audioMemories = [
   },
 ];
 
-const TimelineItem = ({ item, index }: any) => {
+interface AudioMemory {
+  id: string;
+  date: string;
+  title: string;
+  audio: string;
+  image: string;
+}
+
+interface TimelineItemProps {
+  item: AudioMemory;
+  index: number;
+}
+
+const TimelineItem = ({ item, index }: TimelineItemProps) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const isLeft = index % 2 === 0;
@@ -123,7 +136,13 @@ const TimelineItem = ({ item, index }: any) => {
   );
 };
 
-const CardContent = ({ item, isPlaying, onPlay }: any) => (
+interface CardContentProps {
+  item: AudioMemory;
+  isPlaying: boolean;
+  onPlay: () => void;
+}
+
+const CardContent = ({ item, isPlaying, onPlay }: CardContentProps) => (
   <div
     onClick={onPlay}
     className="bg-white rounded-[20px] overflow-hidden border border-[#FFF0F3] shadow-lg cursor-pointer transform transition-transform hover:scale-105 active:scale-95"

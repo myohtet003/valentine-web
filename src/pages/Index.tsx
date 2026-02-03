@@ -166,7 +166,7 @@ export default function SweetDashboard() {
             setRightPhoto(base64);
             localStorage.setItem("right_photo", base64);
           }
-        } catch (err) {
+        } catch {
           alert("Storage is full! Please use a smaller image.");
         }
       };

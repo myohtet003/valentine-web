@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Lottie from "lottie-react";
 import { X } from "lucide-react";
 
+ import type { PanInfo } from "framer-motion";
+
 // Assets
 import heartAnimation from "../assets/lottie/like.json";
 import img1 from "../assets/images/phayar/1.jpg";
@@ -82,7 +84,7 @@ export default function DigitalScrapbook() {
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
 
-  import type { PanInfo } from "framer-motion";
+ 
 
   const handleDragEnd = (_: MouseEvent | TouchEvent, info: PanInfo) => {
     const threshold = 50;
