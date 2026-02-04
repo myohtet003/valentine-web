@@ -380,7 +380,7 @@ export default function ScrapbookPage() {
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.2}
-            onDragEnd={(e, { offset }) => {
+            onDragEnd={(_, { offset }) => {
               const swipe = offset.x;
               if (swipe < -50) paginate(1);
               else if (swipe > 50) paginate(-1);
