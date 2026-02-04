@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation, Navigate } from "react-router-dom";
-import { Heart, Music, Grid2X2 } from "lucide-react";
+import { Heart, Music, Grid2X2, Album } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -17,6 +17,7 @@ export default function MainLayout() {
   const tabs = [
     { name: "Today", path: "/", icon: Heart },
     { name: "Audio", path: "/audio", icon: Music },
+    { name: "Scrapbook", path: "/scrapbook", icon: Album },
     { name: "Memories", path: "/memory", icon: Grid2X2 },
   ];
 
