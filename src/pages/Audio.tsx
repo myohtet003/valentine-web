@@ -11,14 +11,14 @@ const audioMemories = [
   {
     id: "1",
     date: "Jan 12, 2024",
-    title: "The First Hello",
-    audio: "/audio/mhk.mp3", // Web မှာဆိုရင် public folder ထဲ ထည့်သုံးတာ ပိုကောင်းပါတယ်
-    image: Favicon,
+    title: "စံပယ် ဖြူလေးအတွက် အမှတ်တရ",
+    audio: "/audio/mhk.mp3",
+    image: Data,
   },
   {
     id: "2",
     date: "Feb 14, 2024",
-    title: "Valentine's Secret",
+    title: "ဆိုပြဖူးတဲ့ ထဲက အကြိုက်ဆုံးသီချင်း",
     audio: "/audio/Bo Bo.mp3",
     image: White,
   },
@@ -27,7 +27,7 @@ const audioMemories = [
     date: "Mar 03, 2024",
     title: "Thinking of You",
     audio: "/audio/moe.mp3",
-    image: Data,
+    image: Favicon,
   },
 ];
 

@@ -31,6 +31,18 @@ const loveNotes = [
   "မက မောင့်ကမ္ဘာလေးရဲ့ အလှပဆုံးအရာပါ။ ✨",
   "ဒီနေ့လည်း မ့ကို မနေ့ကထက် ပိုချစ်တယ်နော်။ 💖",
   "မ့ မျက်နှာလေး မြင်ချင်လို့ vc ပြောချင်လှပေါ့။ 👀💖",
+  "အလုပ်သာ လုပ်နေတာ စိတ်က မ့ဆီကို ပဲရောက်။ 💼➡️❤️",
+  "ဒီနေ့ကစပြီး အနာဂတ်တိုင်းမှာ မ့ လက်ကိုပဲ တွဲထားချင်တာ။ 🤝✨",
+  "မ့ အပြုံးလေးတွေက မောင့်ကမ္ဘာကြီးကို လင်းထိန်စေတယ်နော်။ 😊☀️",
+  "ဘယ်လိုအခြေအနေမျိုးမှာဖြစ်ဖြစ် မ့ နားမှာ မောင်အမြဲရှိနေမှာပါ။ 🫂❤️",
+  "မ ရှိနေပေးတာနဲ့တင် မောင့်ဘဝက ပြည့်စုံနေပါပြီ။ 🌸💎",
+  "မောင်တို့နှစ်ယောက်ရဲ့ ပုံရိပ်လေးတွေကို ပြန်ကြည့်တိုင်း အရမ်းပျော်ဖို့ကောင်းတယ်။ 📸💕",
+  "မက စိတ်ဆိုးနေရင်တောင် မောင့်မျက်လုံးထဲမှာ အရမ်းချစ်ဖို့ကောင်းနေတုန်းပဲ။ 😘💢",
+  "မ့ကို အများကြီး ဂရုစိုက်ချင်လို့ မောင့်နားမှာပဲ အမြဲနေပေးပါဦး။ 🧸💌",
+  "တစ်ကမ္ဘာလုံးနဲ့ ယှဉ်ရင်တောင် မ့ကိုပဲ မောင်က ရွေးချယ်မှာပါ။ 🌎🌹",
+  "မ့ရဲ့ အသံလေး ကြားနေရတာတင် မောင့်အတွက်တော့ စိတ်အေးချမ်းမှုပဲ။ 🎧💓",
+  "မောင့်ရဲ့ တစ်ဦးတည်းသော 'မ' အဖြစ် အမြဲရှိနေပေးပါနော်။ 👑👰",
+  "မနဲ့တွေ့မှပဲ အချစ်ဆိုတာ ဘာလဲဆိုတာ မောင်သိခဲ့ရတာ။ 🥰📖",
 ];
 
 // --- Sub-Components ---
@@ -48,12 +60,9 @@ const TimeBlock = ({ value, label }: { value: number; label: string }) => (
 );
 
 export default function SweetDashboard() {
-  // --- States: Initialized directly from LocalStorage to prevent "Refresh Disappear" ---
   const [isSaved, setIsSaved] = useState(
     () => localStorage.getItem("anni_date") !== null,
   );
-  //   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // ဒီ line ကို ရှာပြီး အောက်ကအတိုင်း အစားထိုးပါ
   const [isAuthenticated, setIsAuthenticated] = useState(
     () => localStorage.getItem("is_auth") === "true",
   );
@@ -92,15 +101,37 @@ export default function SweetDashboard() {
     secs: 0,
   });
 
-  // --- Handlers ---
+  // --- Image Compressor Helper ---
+  const compressImage = (file: File, callback: (base64: string) => void) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target?.result as string;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_WIDTH = 800; // Size ကို လျှော့ချမယ်
+        const scaleSize = MAX_WIDTH / img.width;
+        canvas.width = MAX_WIDTH;
+        canvas.height = img.height * scaleSize;
+
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        // Quality ကို 0.7 (70%) အထိ လျှော့ချပြီး base64 ပြောင်းမယ်
+        const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+        callback(compressedBase64);
+      };
+    };
+  };
+
   const updateTimers = useCallback(() => {
     const now = new Date();
     const diff = Math.abs(now.getTime() - startDate.getTime());
-
     setTimeStats({
       days: Math.floor(diff / (1000 * 60 * 60 * 24)),
       hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-      mins: Math.floor((diff / (1000 * 60 * 60)) % 60),
+      mins: Math.floor((diff / (1000 * 60)) % 60),
       secs: Math.floor((diff / 1000) % 60),
     });
 
@@ -139,15 +170,14 @@ export default function SweetDashboard() {
   };
 
   const handleUnlock = () => {
-    const correctPass = inputDate.replace(/-/g, "");
-    if (passwordInput === correctPass) {
+    const cleanInput = passwordInput.replace(/\D/g, "");
+    const cleanAnni = inputDate.replace(/\D/g, "");
+    if (cleanInput === cleanAnni) {
       localStorage.setItem("is_auth", "true");
       setIsAuthenticated(true);
-
-      // Page ကို reload လုပ်မှ Layout က Tab Bar ကို တန်းပြမှာပါ
       window.location.reload();
     } else {
-      setPasswordHint(`Starts with "${correctPass[0]}"`);
+      setPasswordHint(`Hint: It's our special date!`);
       alert("Incorrect Date!");
     }
   };
@@ -158,27 +188,21 @@ export default function SweetDashboard() {
   ) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 1.5 * 1024 * 1024) {
-        // 1.5MB limit to prevent localStorage crash
-        alert("Image is too large. Please select a photo under 1.5MB.");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result as string;
+      // Size limit မထားတော့ဘဲ အလိုအလျောက် compress လုပ်မယ်
+      compressImage(file, (compressedBase64) => {
         try {
           if (side === "left") {
-            setLeftPhoto(base64);
-            localStorage.setItem("left_photo", base64);
+            setLeftPhoto(compressedBase64);
+            localStorage.setItem("left_photo", compressedBase64);
           } else {
-            setRightPhoto(base64);
-            localStorage.setItem("right_photo", base64);
+            setRightPhoto(compressedBase64);
+            localStorage.setItem("right_photo", compressedBase64);
           }
-        } catch {
-          alert("Storage is full! Please use a smaller image.");
+        } catch (err) {
+          alert("Storage is full! Please try a different photo.");
+          console.error(err);
         }
-      };
-      reader.readAsDataURL(file);
+      });
     }
   };
 
@@ -193,7 +217,7 @@ export default function SweetDashboard() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-[#FFF0F3] via-[#FFCCD5] to-[#FFB3C1] font-sans text-[#590D22] selection:bg-[#FF4D6D]/30">
+    <div className="min-h-screen w-full bg-gradient-to-b from-[#FFF0F3] via-[#FFCCD5] to-[#FFB3C1] font-sans text-[#590D22] selection:bg-[#FF4D6D]/30 pb-20">
       {/* 1. SETUP SCREEN */}
       {!isSaved && (
         <div className="flex min-h-screen items-center justify-center p-6">
@@ -248,6 +272,7 @@ export default function SweetDashboard() {
             </p>
             <input
               type="password"
+              inputMode="numeric"
               placeholder="Password"
               value={passwordInput}
               onChange={(e) => setPasswordInput(e.target.value)}
@@ -288,7 +313,6 @@ export default function SweetDashboard() {
             className="bg-white p-8 rounded-[40px] shadow-2xl shadow-pink-200/50 border border-white"
           >
             <div className="flex items-center justify-center gap-4 mb-8">
-              {/* Left Photo */}
               <label className="relative cursor-pointer group">
                 <div className="w-20 h-20 rounded-full border-4 border-pink-100 overflow-hidden bg-pink-50 flex items-center justify-center shadow-inner">
                   {leftPhoto ? (
@@ -318,7 +342,6 @@ export default function SweetDashboard() {
                 <Heart size={32} fill="#FF4D6D" className="text-[#FF4D6D]" />
               </motion.div>
 
-              {/* Right Photo */}
               <label className="relative cursor-pointer group">
                 <div className="w-20 h-20 rounded-full border-4 border-pink-100 overflow-hidden bg-pink-50 flex items-center justify-center shadow-inner">
                   {rightPhoto ? (
