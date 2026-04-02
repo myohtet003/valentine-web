@@ -8,7 +8,7 @@ import {
   Clock,
   Quote,
   X,
-  Camera,
+  Camera, 
 } from "lucide-react";
 
 // --- Types ---
@@ -17,6 +17,13 @@ interface TimeStats {
   hours: number;
   mins: number;
   secs: number;
+}
+
+interface Ripple {
+  id: number;
+  x: number;
+  y: number;
+  size: number;
 }
 
 // --- Constants ---
@@ -116,12 +123,18 @@ export default function SweetDashboard() {
   );
   const [canClick, setCanClick] = useState(true);
   const [unlockTime, setUnlockTime] = useState("");
+  const [anniversaryRipples, setAnniversaryRipples] = useState<Ripple[]>([]);
   const [timeStats, setTimeStats] = useState<TimeStats>({
     days: 0,
     hours: 0,
     mins: 0,
     secs: 0,
   });
+  const now = new Date();
+  const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  // const isPreviewAnniversary =
+  //   import.meta.env.DEV && todayKey !== "2026-04-17";
+  const isThirdAnniversary = todayKey === "2026-04-17";
 
   // --- Image Compressor Helper ---
   const compressImage = (file: File, callback: (base64: string) => void) => {
@@ -238,6 +251,24 @@ export default function SweetDashboard() {
     localStorage.setItem("current_note", newNote);
   };
 
+  const handleAnniversaryTouch = (
+    e: React.PointerEvent<HTMLDivElement>,
+  ) => {
+    const box = e.currentTarget.getBoundingClientRect();
+    const size = Math.max(box.width, box.height) * 0.9;
+    const ripple: Ripple = {
+      id: Date.now() + Math.floor(Math.random() * 1000),
+      x: e.clientX - box.left,
+      y: e.clientY - box.top,
+      size,
+    };
+
+    setAnniversaryRipples((prev) => [...prev, ripple]);
+    setTimeout(() => {
+      setAnniversaryRipples((prev) => prev.filter((item) => item.id !== ripple.id));
+    }, 850);
+  };
+
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-[#FFF0F3] via-[#FFCCD5] to-[#FFB3C1] font-sans text-[#590D22] selection:bg-[#FF4D6D]/30 pb-20">
       {/* 1. SETUP SCREEN */}
@@ -318,6 +349,98 @@ export default function SweetDashboard() {
       {/* 3. MAIN DASHBOARD */}
       {isSaved && isAuthenticated && (
         <div className="max-w-xl mx-auto px-6 py-10 space-y-8">
+          {isThirdAnniversary && (
+            <motion.div
+              initial={{ opacity: 0, y: -20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.6 }}
+              onPointerDown={handleAnniversaryTouch}
+              className="relative overflow-hidden rounded-3xl border border-pink-200/80 bg-gradient-to-br from-[#FF4D8D] via-[#FF6FA3] to-[#FF8DBA] p-7 text-center shadow-2xl"
+            >
+              {anniversaryRipples.map((ripple) => (
+                <motion.span
+                  key={ripple.id}
+                  className="absolute rounded-full pointer-events-none border border-white/70 bg-white/20"
+                  style={{
+                    width: ripple.size,
+                    height: ripple.size,
+                    left: ripple.x - ripple.size / 2,
+                    top: ripple.y - ripple.size / 2,
+                  }}
+                  initial={{ scale: 0, opacity: 0.6 }}
+                  animate={{ scale: 1.35, opacity: 0 }}
+                  transition={{ duration: 0.85, ease: "easeOut" }}
+                />
+              ))}
+
+              {/* Floating rose petals */}
+              {Array.from({ length: 10 }).map((_, i) => (
+                <motion.div
+                  key={`petal-${i}`}
+                  className="absolute pointer-events-none"
+                  style={{ left: `${8 + i * 9}%`, top: "-10%" }}
+                  initial={{ y: -10, opacity: 0 }}
+                  animate={{
+                    y: [0, 190 + (i % 3) * 30],
+                    x: [0, i % 2 === 0 ? 16 : -16, i % 2 === 0 ? -10 : 10],
+                    opacity: [0, 0.85, 0],
+                    rotate: [0, i % 2 === 0 ? 18 : -18],
+                  }}
+                  transition={{
+                    duration: 5.2 + (i % 3),
+                    repeat: Infinity,
+                    delay: i * 0.35,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <span className="text-lg">🌹</span>
+                </motion.div>
+              ))}
+
+              {/* Subtle sparkle trail */}
+              {Array.from({ length: 12 }).map((_, i) => (
+                <motion.span
+                  key={`spark-${i}`}
+                  className="absolute text-pink-100/80 pointer-events-none"
+                  style={{
+                    top: `${14 + (i % 4) * 20}%`,
+                    left: `${10 + (i % 6) * 15}%`,
+                  }}
+                  animate={{
+                    opacity: [0.2, 1, 0.25],
+                    scale: [0.8, 1.25, 0.85],
+                  }}
+                  transition={{
+                    duration: 1.8 + (i % 3) * 0.45,
+                    repeat: Infinity,
+                    delay: i * 0.16,
+                  }}
+                >
+                  ✨
+                </motion.span>
+              ))}
+
+              <div className="absolute inset-0 bg-gradient-to-t from-[#C9184A]/40 via-transparent to-pink-100/20" />
+
+              <p className="relative text-xs font-bold uppercase tracking-[3px] text-pink-100 mb-2">
+                A Night of Love
+              </p>
+              {/* {isPreviewAnniversary && (
+                <p className="relative text-[11px] font-semibold text-pink-100/90 mb-2">
+                  Preview mode is ON
+                </p>
+              )} */}
+              <h2 className="relative text-2xl font-extrabold text-white mb-3">
+                Happy 3 Years Anni Par "Ma"
+              </h2>
+              <p className="relative text-sm text-pink-50 leading-relaxed">
+                17/04/2026 — three beautiful years of us. Thank you for every
+                smile, every memory, and every heartbeat together.{" "}
+                <span className="font-bold text-[#FFD7F8]">I love you so much.</span>
+              </p>
+            </motion.div>
+          )}
+
           <div
             onClick={() => setShowEditModal(true)}
             className="flex items-center justify-center gap-2 bg-white/40 backdrop-blur-sm py-2 px-6 rounded-full w-fit mx-auto cursor-pointer border border-white/50 hover:bg-white/60 transition-all shadow-sm"
