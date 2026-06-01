@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
@@ -8,7 +8,7 @@ import {
   Clock,
   Quote,
   X,
-  Camera, 
+  Camera,
 } from "lucide-react";
 
 // --- Types ---
@@ -27,36 +27,29 @@ interface Ripple {
 }
 
 // --- Constants ---
-const loveNotes = [ 
-  "မောင်တို့နှစ်ယောက်ရဲ့ အမှတ်တရတွေက မောင့်ဘဝရဲ့ တန်ဖိုးအရှိဆုံး အရာတွေပါ။ 💎✨",
-  "ဒီနေ့ကစပြီး အသက်တေကြီးတဲ့အထိ မ့ ဘေးနားမှာပဲ ရှိနေမယ်နော်။ 👴👵❤️",
-  "မ က မောင့်ဘဝရဲ့ ကံကောင်းစေတဲ့ လက်ဆောင်လေးပါ။ 🎁🍀",
-  "မောင့်ရဲ့ တစ်နေ့တာလုံးမှာ မ့အကြောင်း တွေးနေရတဲ့ အချိန်က အများဆုံးပဲ။ 💭💘",
-  "မ့ကို ကြည့်နေရင်းနဲ့တင် အချိန်တွေ အကြာကြီး ကုန်ဆုံးသွားချင်တာ။ ⏳👀", 
-  "မ့ ဆီက message လေး တစ်ခု ရောက်လာတာနဲ့တင် မောင့်မျက်နှာက ပြုံးရွှင်သွားရော။ 📱😊",
-  "မ က မောင့်အတွက်တော့ အစားထိုးလို့မရတဲ့ တစ်ဦးတည်းသောသူပါ။ 🥇🌹", 
-  "မောင်တို့နှစ်ယောက် အတူတူ သွားခဲ့တဲ့ နေရာတိုင်းက မောင့်အတွက် အမှတ်တရပဲ။ 🗺️✨", 
-  "မောင့်ဘဝရဲ့ ဇာတ်လမ်းလေးမှာ မ က အဓိက ဇာတ်ဆောင်မင်းသမီးလေးပေါ့။ 👸🎬",
-  "မ့ မျက်နှာလေးကို ငေးကြည့်နေရရင် ကမ္ဘာပေါ်မှာ မောင်အပျော်ဆုံးပဲ။ 😍✨", 
-  "မောင့်ဘဝရဲ့ နေ့ရက်တိုင်းမှာ မ ရှိနေပေးတာက အကြီးမားဆုံး ဆုလာဘ်ပဲ။ 🎁🌸",
-  "မ့ရဲ့ နူးညံ့တဲ့ စိတ်ထားလေးကို မောင် အမြတ်နိုးဆုံးပါ။ ✨💖",
-  "မောင့်ဘဝရဲ့ အမှောင်ဆုံးနေ့တွေမှာ မ က မီးအိမ်လေးလို လင်းထိန်စေခဲ့တာ။ 💡🌟",
-  "မ့ကို အနိုင်ပေးရတာက မောင့်အတွက်တော့ အကြီးမားဆုံး အောင်ပွဲပဲ။ 🏳️‍🌈💌",
-  "မောင့်ရဲ့ တစ်ခုတည်းသော ဆန္ဒက မ့ ဘေးနားမှာ အိုမင်းတဲ့ထိ ရှိသွားချင်တာပါ။ 👴👵✨",
-  "မ့ မျက်ရည်တစ်စက် ကျမှာကိုတောင် မောင်က ကမ္ဘာပျက်သလို ကြောက်တာ။ 💧🙅‍♂️",
-  "မ က မောင့်ဘဝရဲ့ ပျော်ရွှင်ခြင်း သော့ချက်လေးပါ။ 🔑😊",
-  "ဘယ်သူတွေ ဘာပြောပြော မောင့်ယုံကြည်မှုအားလုံးက မ့ ဆီမှာပဲ ရှိတယ်။ 🤝💞",
-  "မ့ဆီက ဖုန်းဝင်လာရင် ရင်ခုန်ရတာ ခုထိ မရိုးသေးဘူးနော်။ 📞💓",
-  "မ က မောင့်ဘဝထဲကို ကောင်းကင်က ပေးလိုက်တဲ့ နတ်သမီးလေးလိုပဲ။ 🧚‍♀️✨", 
-  "မောင်တို့နှစ်ယောက်ရဲ့ အချစ်က ကမ္ဘာတည်သရွေ့ ခိုင်မြဲနေမှာပါ။ 🌎♾️",
-  "မ့ကို ဂရုစိုက်ရတာ မောင့်အတွက်တော့ ဝတ္တရားမဟုတ်ဘဲ ပျော်ရွှင်မှုပါ။ 🥰🌸", 
-  "နပိုလီယံ ကမ္ဘာတစ်ခြမ်းပဲ ပိုင်တာလောက်တော့ သနားတာပေါ့... မောင့်မှာတော့ 'မ' ဆိုတဲ့ တစ်ကမ္ဘာလုံး ရှိနေတာ။ 🌍👑", 
-  "ကမ္ဘာကျော် ပန်းချီဆရာတွေ ဘယ်လောက်တော်တော် မ့ အပြုံးလောက်တော့ အသက်မဝင်နိုင်ပါဘူး။ 🎨✨", 
-  "ဘဝဆိုတဲ့ ပုစ္ဆာမှာ မ က မောင့်အတွက် အဖြေမှန်တစ်ခုတည်းပါပဲ။ ✅📝",
-  "မောင့်ရဲ့ နှလုံးခုန်သံတိုင်းက 'မ-မ-မ' လို့ပဲ အမြဲ အော်နေတာ။ 💓🔊",  
-  "မ့ကို ချစ်ရတာက မောင့်ဘဝရဲ့ အလုပ်အဖြစ်ဆုံးနဲ့ အမြတ်ဆုံး ရင်းနှီးမြှုပ်နှံမှုပဲ။ 📈💎",
-  "မောင့်ဘဝရဲ့ နောက်ဆုံးစာမျက်နှာအထိ 'မ' နဲ့ပဲ အတူတူ ဖြတ်သန်းသွားချင်တာ။ 📖🖋️"
+const loveNotes = [
+  "ကိန္နရီ ကိန္နရာလို တစ်သက်လုံး မခွဲပဲ ချစ်နေမာ။ 🕊️❤️",
+  "မ ရှိတဲ့အရပ်က မောင့်အတွက်တော့ နိဗ္ဗာန်ပဲ။ 🏔️🌸",
+  "မ့ရဲ့ 'မောင်' ဆိုတဲ့ ခေါ်သံလေးက အချိုသာဆုံး ဂီတပဲ။ 🎶💖",
+  "မဟာတံတိုင်းကြီးထက် မောင့်ရဲ့ ရင်ခွင်က ပိုလုံခြုံပါတယ်နော်။ 🧱🫂",
+  "ကမ္ဘာကျော် စိန်ပွင့်တွေထက် မ့ မျက်ဝန်းလေးတွေက ပိုတောက်ပတာ။ 💎 👀",
+  "သမုဒ္ဒရာတွေထက် မ့အပေါ်ထားတဲ့ သစ္စာက ပိုနက်ရှိုင်းတယ်။ 🌊⚓",
+  "မ့ နှုတ်ခမ်းလေး စူနေတာကအစ မောင့်အတွက်တော့ အနုပညာပဲ။ 😗🎨",
+  "လောကကြီးတစ်ခုလုံးနဲ့ ယှဉ်ရင်တောင် မ့ကိုပဲ ရွေးချယ်ပစ်မှာ။ ⚔️❤️",
+  "မ့အတွက်ဆိုရင် မောင့်အချိန်၊ အင်အား၊ အရာအားလုံးပေးနိုင်တယ်။ 🔥❤️",
+  "မောင့်နှလုံးသားက 'မ-မ-မ' လို့ပဲ တစ်ချိန်လုံး ခုန်နေတာ။ 💓🔊",
+  "ကမ္ဘာမြေကြီး လည်ပတ်တာသာ ရပ်ရင်ရပ်သွားမယ် မောင့်အချစ်က ရပ်မှာ မဟုတ်ဘူးရယ်။ 🌎🛑",
+  "မ့ လက်ကို တွဲထားရရင် ဘယ်နေရာမဆို နန်းတော်ပဲ။ 🏰🤝",
+  "မောင့်ပျော်ရွှင်မှုတွေက မ့ ဆီက မြစ်ဖျားခံပြီးတော့ပဲ စီးဆင်းတာ။ 🌊😊",
+  "မောင့်အချစ်တွေက လကွယ်ညလို ဘယ်တော့မှ မှောင်မသွားဘူး။ 🌙💡",
+  "မ့ရဲ့ အရိပ်ကလေးကအစ မောင့်ဘဝကို အဓိပ္ပာယ်ရှိစေတယ်။ 👤🎨",
+  "မ့ ခြေဖဝါးအောက်မှာ မောင့်ကမ္ဘာတစ်ခုလုံး ပုံအပ်ထားတယ်။ 👑👣",
+  "မ့ မျက်ရည်တစ်စက်က မောင့်အတွက်တော့ ကမ္ဘာပျက်တာပဲ။ 💧🙅‍♂️",
+  "ကြယ်တွေ ဘယ်လောက်စုံစုံ မ့ မျက်ဝန်းလောက် မလှဘူး။ ✨👀",
+  "ဘဝဆိုတဲ့ ပုစ္ဆာမှာ မ က မောင့်အတွက် တစ်ခုတည်းသော အဖြေ။(ကလေးအကွက်တေ😂) ✅📝",
+  "မ့ကို လွမ်းတဲ့စိတ်က မောင့်ကို အမြဲ နွေးထွေးစေပါတယ်။ 🔥❤️",
 ];
+const NOTE_LOCK_MS = 24 * 60 * 60 * 1000;
 
 // --- Sub-Components ---
 const TimeBlock = ({ value, label }: { value: number; label: string }) => (
@@ -73,6 +66,40 @@ const TimeBlock = ({ value, label }: { value: number; label: string }) => (
 );
 
 export default function SweetDashboard() {
+  const getStoredNoteIndex = () => {
+    const storedIndex = localStorage.getItem("current_note_index");
+    if (storedIndex !== null) {
+      const parsed = Number(storedIndex);
+      if (Number.isFinite(parsed) && parsed >= 0) {
+        return parsed % loveNotes.length;
+      }
+    }
+    const storedNote = localStorage.getItem("current_note");
+    if (storedNote) {
+      const index = loveNotes.indexOf(storedNote);
+      if (index !== -1) return index;
+    }
+    return 0;
+  };
+  const getLockInfo = useCallback((nowTime: number) => {
+    const lastClick = localStorage.getItem("last_love_note_time");
+    if (!lastClick) {
+      return { canClick: true, unlockTime: "" };
+    }
+    const lastClickTime = Number(lastClick);
+    if (!Number.isFinite(lastClickTime)) {
+      localStorage.removeItem("last_love_note_time");
+      return { canClick: true, unlockTime: "" };
+    }
+    const lockDiff = lastClickTime + NOTE_LOCK_MS - nowTime;
+    if (lockDiff <= 0) {
+      return { canClick: true, unlockTime: "" };
+    }
+    const h = Math.floor(lockDiff / 3600000);
+    const m = Math.floor((lockDiff % 3600000) / 60000);
+    const s = Math.floor((lockDiff % 60000) / 1000);
+    return { canClick: false, unlockTime: `${h}h ${m}m ${s}s` };
+  }, []);
   const [isSaved, setIsSaved] = useState(
     () => localStorage.getItem("anni_date") !== null,
   );
@@ -102,11 +129,18 @@ export default function SweetDashboard() {
   );
 
   const [showEditModal, setShowEditModal] = useState(false);
+  const [noteIndex, setNoteIndex] = useState(getStoredNoteIndex);
   const [currentNote, setCurrentNote] = useState(
-    () => localStorage.getItem("current_note") || loveNotes[0],
+    () => loveNotes[getStoredNoteIndex()],
   );
-  const [canClick, setCanClick] = useState(true);
-  const [unlockTime, setUnlockTime] = useState("");
+  const initialLockState = useMemo(
+    () => getLockInfo(Date.now()),
+    [getLockInfo],
+  );
+  const [canClick, setCanClick] = useState(initialLockState.canClick);
+  const [unlockTime, setUnlockTime] = useState(
+    initialLockState.unlockTime,
+  );
   const [anniversaryRipples, setAnniversaryRipples] = useState<Ripple[]>([]);
   const [timeStats, setTimeStats] = useState<TimeStats>({
     days: 0,
@@ -154,25 +188,14 @@ export default function SweetDashboard() {
       secs: Math.floor((diff / 1000) % 60),
     });
 
-    const lastClick = localStorage.getItem("last_love_note_time");
-    if (lastClick) {
-      const lockDiff =
-        parseInt(lastClick) + 24 * 60 * 60 * 1000 - now.getTime();
-      if (lockDiff <= 0) {
-        setCanClick(true);
-        setUnlockTime("");
-      } else {
-        const h = Math.floor(lockDiff / 3600000);
-        const m = Math.floor((lockDiff % 3600000) / 60000);
-        const s = Math.floor((lockDiff % 60000) / 1000);
-        setUnlockTime(`${h}h ${m}m ${s}s`);
-        setCanClick(false);
-      }
-    }
-  }, [startDate]);
+    const lockInfo = getLockInfo(now.getTime());
+    setCanClick(lockInfo.canClick);
+    setUnlockTime(lockInfo.unlockTime);
+  }, [startDate, getLockInfo]);
 
   useEffect(() => {
     if (!isSaved || !isAuthenticated) return;
+    updateTimers();
     const interval = setInterval(updateTimers, 1000);
     return () => clearInterval(interval);
   }, [isSaved, isAuthenticated, updateTimers]);
@@ -227,17 +250,18 @@ export default function SweetDashboard() {
 
   const handleNewNote = () => {
     if (!canClick) return;
-    const newNote = loveNotes[Math.floor(Math.random() * loveNotes.length)];
+    const nextIndex = (noteIndex + 1) % loveNotes.length;
+    const newNote = loveNotes[nextIndex];
+    setNoteIndex(nextIndex);
     setCurrentNote(newNote);
     setCanClick(false);
     const now = new Date().getTime().toString();
     localStorage.setItem("last_love_note_time", now);
     localStorage.setItem("current_note", newNote);
+    localStorage.setItem("current_note_index", nextIndex.toString());
   };
 
-  const handleAnniversaryTouch = (
-    e: React.PointerEvent<HTMLDivElement>,
-  ) => {
+  const handleAnniversaryTouch = (e: React.PointerEvent<HTMLDivElement>) => {
     const box = e.currentTarget.getBoundingClientRect();
     const size = Math.max(box.width, box.height) * 0.9;
     const ripple: Ripple = {
@@ -249,7 +273,9 @@ export default function SweetDashboard() {
 
     setAnniversaryRipples((prev) => [...prev, ripple]);
     setTimeout(() => {
-      setAnniversaryRipples((prev) => prev.filter((item) => item.id !== ripple.id));
+      setAnniversaryRipples((prev) =>
+        prev.filter((item) => item.id !== ripple.id),
+      );
     }, 850);
   };
 
@@ -420,7 +446,9 @@ export default function SweetDashboard() {
               <p className="relative text-sm text-pink-50 leading-relaxed">
                 17/04/2026 — three beautiful years of us. Thank you for every
                 smile, every memory, and every heartbeat together.{" "}
-                <span className="font-bold text-[#FFD7F8]">I love you so much.</span>
+                <span className="font-bold text-[#FFD7F8]">
+                  I love you so much.
+                </span>
               </p>
             </motion.div>
           )}
