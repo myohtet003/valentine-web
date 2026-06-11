@@ -138,9 +138,7 @@ export default function SweetDashboard() {
     [getLockInfo],
   );
   const [canClick, setCanClick] = useState(initialLockState.canClick);
-  const [unlockTime, setUnlockTime] = useState(
-    initialLockState.unlockTime,
-  );
+  const [unlockTime, setUnlockTime] = useState(initialLockState.unlockTime);
   const [anniversaryRipples, setAnniversaryRipples] = useState<Ripple[]>([]);
   const [timeStats, setTimeStats] = useState<TimeStats>({
     days: 0,
