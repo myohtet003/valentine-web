@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function LoveScoreApp() {
-  // LocalStorage ကနေ Initial Value တွေကို ဆွဲယူခြင်း (မရှိရင် 0 ပြောင်းမည်)
+export default function LoveScoreApp() { 
   const [goodScore, setGoodScore] = useState<number>(() => {
     const saved = localStorage.getItem("romantic_good_score");
     return saved ? parseInt(saved, 10) : 0;
@@ -12,15 +11,11 @@ export default function LoveScoreApp() {
     const saved = localStorage.getItem("romantic_bad_score");
     return saved ? parseInt(saved, 10) : 0;
   });
-
-  // ✨ Math.random() Error ကို ရှင်းရန်:
-  // Component စဖွင့်ကတည်းက နှလုံးသား ၁၂ ခုအတွက် left position တွေကို State ထဲမှာ တစ်ခါတည်း ကြိုတင်တွက်ချက်ခြင်း။
-  // ပထမဆုံးအကြိမ်ပဲ အလုပ်လုပ်မှာဖြစ်လို့ Render Flow ကို Pure ဖြစ်စေပြီး Error လုံးဝ မတက်တော့ပါ။
+ 
   const [heartPositions] = useState<string[]>(() =>
     [...Array(12)].map(() => `${Math.random() * 100}%`),
   );
-
-  // အမှတ်တွေ ပြောင်းလဲသွားတိုင်း LocalStorage ထဲမှာ သိမ်းဆည်းပေးခြင်း
+ 
   useEffect(() => {
     localStorage.setItem("romantic_good_score", goodScore.toString());
   }, [goodScore]);
@@ -111,7 +106,7 @@ export default function LoveScoreApp() {
               repeat: Infinity,
               delay: i * 0.6,
             }}
-            style={{ left: leftPos }} // ✨ Error တက်စေတဲ့ Math.random() နေရာမှာ ကြိုတွက်ထားတဲ့ State တန်ဖိုးကို အစားထိုးလိုက်သည်
+            style={{ left: leftPos }}  
           >
             💖
           </motion.span>

@@ -10,8 +10,7 @@ import LoveScore from "./pages/LoveScore";
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* MainLayout က Tab Bar ကို ထိန်းချုပ်ထားတယ် */}
+      <Routes> 
         <Route element={<MainLayout />}>
           <Route path="/" element={<Index />} />
           <Route path="/scrapbook" element={<ScrapBook />} />

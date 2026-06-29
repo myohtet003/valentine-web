@@ -5,8 +5,7 @@ import { Heart, Mic2 } from "lucide-react";
 import Favicon from "../assets/images/favicon.png";
 import White from "../assets/images/white.jpg";
 import Data from "../assets/images/date.jpg";
-
-// Assets - သင့် Path အတိုင်း ပြန်ချိန်ပေးပါ
+ 
 const audioMemories = [
   {
     id: "1",

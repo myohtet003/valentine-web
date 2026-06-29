@@ -171,7 +171,7 @@ export default function SweetDashboard() {
       img.src = event.target?.result as string;
       img.onload = () => {
         const canvas = document.createElement("canvas");
-        const MAX_WIDTH = 800; // Size ကို လျှော့ချမယ်
+        const MAX_WIDTH = 800;  
         const scaleSize = MAX_WIDTH / img.width;
         canvas.width = MAX_WIDTH;
         canvas.height = img.height * scaleSize;
@@ -179,7 +179,7 @@ export default function SweetDashboard() {
         const ctx = canvas.getContext("2d");
         ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-        // Quality ကို 0.7 (70%) အထိ လျှော့ချပြီး base64 ပြောင်းမယ်
+         
         const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
         callback(compressedBase64);
       };
@@ -237,8 +237,7 @@ export default function SweetDashboard() {
     side: "left" | "right",
   ) => {
     const file = e.target.files?.[0];
-    if (file) {
-      // Size limit မထားတော့ဘဲ အလိုအလျောက် compress လုပ်မယ်
+    if (file) { 
       compressImage(file, (compressedBase64) => {
         try {
           if (side === "left") {
